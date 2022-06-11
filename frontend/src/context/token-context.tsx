@@ -13,12 +13,14 @@ import contractAddress from "./../contracts/contract-address.json";
 
 // State
 interface ITokenState {
+  address: string,
   name: string,
   symbol: string,
   supply: number,
 }
 
 const initialState: ITokenState = {
+  address: "",
   name: "",
   symbol: "",
   supply: 0,
@@ -26,12 +28,15 @@ const initialState: ITokenState = {
 
 // Reducer
 type TokenAction =
+  | { type: 'SET_ADDRESS'; payload: string }
   | { type: 'SET_NAME'; payload: string }
   | { type: 'SET_SYMBOL'; payload: string }
   | { type: 'SET_SUPPLY'; payload: number }
 
 const reducer = (state: ITokenState, action: TokenAction): ITokenState => {
   switch (action.type) {
+    case 'SET_ADDRESS':
+      return { ...state, address: action.payload }
     case 'SET_NAME':
       return { ...state, name: action.payload }
     case 'SET_SYMBOL':
@@ -66,6 +71,15 @@ const TokenContextProvider: FC<IProviderProps> = ({children}) => {
     TokenArtifact.abi,
     provider.getSigner(0)
   );
+
+  useEffect(() => {
+    getAddress();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const getAddress = async () => {
+    dispatch({type: 'SET_ADDRESS', payload: contractAddress.Burner});
+  };
 
   useEffect(() => {
     getName();
