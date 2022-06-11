@@ -1,9 +1,17 @@
 import React from 'react';
 
-function App() {
-  return (
+import NavBar from './components/NavBar';
+import NoWalletMessage from './components/NoWalletMessage';
+import { useEthereumState } from "./context/ethereum-context";
+
+const App: React.FC = () => {
+  const { provider } = useEthereumState();
+
+  if (!provider) return <NoWalletMessage />;
+
+  return(
     <div className="App">
-      <p>burn</p>
+      <NavBar />
     </div>
   );
 }

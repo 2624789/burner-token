@@ -1,3 +1,22 @@
+/*
+  Blue Gray
+  #90ADC6
+
+  Pewter
+  #E9EAEC
+
+  Yellow
+  #FAD02C
+
+  Dark Blue
+  #333652
+*/
+
+$bluegray: #90ADC6;
+$pewter: #E9EAEC;
+$yellow: #FAD02C;
+$darkblue: #333652;
+
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
@@ -5,9 +24,23 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background-color: $darkblue;
 }
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
+}
+
+.Container {
+  max-width: 800px;
+  margin:  auto;
+}
+
+p {
+  color: $pewter;
+}
+
+a {
+  color: $yellow;
 }
