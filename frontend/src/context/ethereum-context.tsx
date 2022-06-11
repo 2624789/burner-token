@@ -31,7 +31,7 @@ interface IEthState {
 const initialState: IEthState = {
   account: "",
   chain: "",
-  provider: {},
+  provider: undefined,
 }
 
 const reducer = (state: IEthState, action: EthAction): IEthState => {
