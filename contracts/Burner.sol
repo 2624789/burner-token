@@ -6,6 +6,6 @@ import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 
 contract Burner is ERC20 {
     constructor(uint256 initialSupply) ERC20("Burner", "BRNR") {
-        _mint(msg.sender, initialSupply);
+        _mint(msg.sender, initialSupply * (10**decimals()));
     }
 }

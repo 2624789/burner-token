@@ -107,7 +107,8 @@ const TokenContextProvider: FC<IProviderProps> = ({children}) => {
   }, []);
 
   const getSupply = async () => {
-    const supply = await contract.totalSupply();
+    const supplyInWei = await contract.totalSupply();
+    const supply = ethers.utils.formatEther(supplyInWei)
     dispatch({type: 'SET_SUPPLY', payload: parseInt(supply)});
   };
 

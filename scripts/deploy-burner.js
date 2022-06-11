@@ -2,8 +2,8 @@
 
 const hre = require('hardhat');
 
-// 10000 * 1e18
-const INITIAL_SUPPLY = '10000000000000000000000';
+// Do not include decimals
+const INITIAL_SUPPLY = '10000000';
 
 async function main() {
   const Burner = await hre.ethers.getContractFactory('Burner');
