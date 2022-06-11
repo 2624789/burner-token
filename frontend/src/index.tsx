@@ -5,6 +5,7 @@ import './index.scss';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { EthereumContextProvider } from "./context/ethereum-context";
+import { TokenContextProvider } from "./context/token-context";
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -12,7 +13,9 @@ const root = ReactDOM.createRoot(
 root.render(
   <React.StrictMode>
     <EthereumContextProvider>
-      <App />
+      <TokenContextProvider>
+        <App />
+      </TokenContextProvider>
     </EthereumContextProvider>
   </React.StrictMode>
 );
