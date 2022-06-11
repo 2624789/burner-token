@@ -5,7 +5,7 @@ import { useTokenState } from "./../../context/token-context";
 import './style.scss';
 
 const TokenOverview: React.FC = () => {
-  const { name, symbol, supply, address, owner } = useTokenState();
+  const { name, symbol, supply, address, owner, presale } = useTokenState();
 
   return(
     <div className="TokenOverview">
@@ -16,6 +16,7 @@ const TokenOverview: React.FC = () => {
           <p><span className="label">Supply:</span> {supply.toLocaleString('en')}</p>
           <p><span className="label">Address:</span> {address}</p>
           <p><span className="label">Owner:</span> {owner}</p>
+          <p><span className="label">Presale:</span> {presale?.toString()}</p>
         </div>
       </div>
     </div>

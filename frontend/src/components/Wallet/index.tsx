@@ -13,7 +13,10 @@ const Wallet: React.FC = () => {
     <div className="Wallet">
       <div className="Container">
         <div className="Card">
-          <p><span className="label">Balance:</span> {balance.toLocaleString('en')}</p>
+          <p>
+            <span className="label">Balance:</span>
+            {' '}{balance.toLocaleString('en')}
+          </p>
           <p><span className="label">Is Owner:</span> {isOwner.toString()}</p>
         </div>
       </div>
