@@ -5,16 +5,17 @@ import { useTokenState } from "./../../context/token-context";
 import './style.scss';
 
 const TokenOverview: React.FC = () => {
-  const { name, symbol, supply, address } = useTokenState();
+  const { name, symbol, supply, address, owner } = useTokenState();
 
   return(
     <div className="TokenOverview">
       <div className="Container">
         <div className="Card">
-          <p><span className="fixed-text">Name:</span> {name}</p>
-          <p><span className="fixed-text">Symbol:</span> {symbol}</p>
-          <p><span className="fixed-text">Supply:</span> {supply.toLocaleString('en')}</p>
-          <p><span className="fixed-text">Address:</span> {address}</p>
+          <p><span className="label">Name:</span> {name}</p>
+          <p><span className="label">Symbol:</span> {symbol}</p>
+          <p><span className="label">Supply:</span> {supply.toLocaleString('en')}</p>
+          <p><span className="label">Address:</span> {address}</p>
+          <p><span className="label">Owner:</span> {owner}</p>
         </div>
       </div>
     </div>

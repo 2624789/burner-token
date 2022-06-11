@@ -16,15 +16,17 @@ import { useEthereumState } from "./ethereum-context";
 interface ITokenState {
   address: string,
   name: string,
+  owner: string,
   symbol: string,
   supply: number,
   balance: number,
 }
 
 const initialState: ITokenState = {
-  address: "",
-  name: "",
-  symbol: "",
+  address: '',
+  name: '',
+  owner: '',
+  symbol: '',
   supply: 0,
   balance: 0,
 }
@@ -34,6 +36,7 @@ type TokenAction =
   | { type: 'SET_ADDRESS'; payload: string }
   | { type: 'SET_BALANCE'; payload: number }
   | { type: 'SET_NAME'; payload: string }
+  | { type: 'SET_OWNER'; payload: string }
   | { type: 'SET_SYMBOL'; payload: string }
   | { type: 'SET_SUPPLY'; payload: number }
 
@@ -45,6 +48,8 @@ const reducer = (state: ITokenState, action: TokenAction): ITokenState => {
       return { ...state, balance: action.payload }
     case 'SET_NAME':
       return { ...state, name: action.payload }
+    case 'SET_OWNER':
+      return { ...state, owner: action.payload }
     case 'SET_SYMBOL':
       return { ...state, symbol: action.payload }
     case 'SET_SUPPLY':
@@ -109,6 +114,16 @@ const TokenContextProvider: FC<IProviderProps> = ({children}) => {
   const getName = async () => {
     const name = await contract.name();
     dispatch({type: 'SET_NAME', payload: name});
+  };
+
+  useEffect(() => {
+    getOwner();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const getOwner = async () => {
+    const owner = await contract.owner();
+    dispatch({type: 'SET_OWNER', payload: owner});
   };
 
   useEffect(() => {

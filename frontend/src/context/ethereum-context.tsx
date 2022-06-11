@@ -5,6 +5,8 @@ import React, {
   useEffect,
   useReducer
 } from 'react';
+
+import { ethers } from "ethers";
 import detectEthereumProvider from '@metamask/detect-provider';
 
 const CHAIN_NAMES: {[key: string]: string}  = {
@@ -113,7 +115,10 @@ const EthereumContextProvider: FC<IProviderProps> = ({children}) => {
     if (accounts.length === 0)
       dispatch({type: 'SET_ACCOUNT', payload: ""});
     else if (accounts[0] !== account)
-      dispatch({type: 'SET_ACCOUNT', payload: accounts[0]});
+      dispatch({
+        type: 'SET_ACCOUNT',
+        payload: ethers.utils.getAddress(accounts[0])
+      });
   };
 
   const connect = async () => {
