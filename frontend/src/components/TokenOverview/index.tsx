@@ -13,7 +13,7 @@ const TokenOverview: React.FC = () => {
         <div className="Card">
           <p><span className="fixed-text">Name:</span> {name}</p>
           <p><span className="fixed-text">Symbol:</span> {symbol}</p>
-          <p><span className="fixed-text">Supply:</span> {supply}</p>
+          <p><span className="fixed-text">Supply:</span> {supply.toLocaleString('en')}</p>
           <p><span className="fixed-text">Address:</span> {address}</p>
         </div>
       </div>
