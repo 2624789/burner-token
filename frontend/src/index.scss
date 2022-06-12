@@ -33,7 +33,7 @@ code {
 }
 
 .Container {
-  max-width: 800px;
+  max-width: 900px;
   margin:  auto;
 }
 
@@ -58,6 +58,10 @@ p {
 
 a {
   color: $yellow;
+}
+
+label {
+  color: $bluegray;
 }
 
 button {
