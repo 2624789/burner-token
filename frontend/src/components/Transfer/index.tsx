@@ -24,7 +24,7 @@ const Transfer: React.FC<ITransferProps> = ({ isAllocation }) => {
   const isTransferEnabled =
     isBalanceEnough && isAmountValid && isRecipientValid;
 
-  const isTransferSupported = presale && isAllocation || !isAllocation;
+  const isTransferSupported = isAllocation || !presale && !isAllocation;
 
   const handleChangeRecipient = (e: React.FormEvent<HTMLInputElement>) => {
     const newValue = e.currentTarget.value;

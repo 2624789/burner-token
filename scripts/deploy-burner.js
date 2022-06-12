@@ -3,7 +3,7 @@
 const hre = require('hardhat');
 
 // Do not include decimals
-const INITIAL_SUPPLY = '10000000';
+const INITIAL_SUPPLY = '20000000000';
 
 async function main() {
   const Burner = await hre.ethers.getContractFactory('Burner');

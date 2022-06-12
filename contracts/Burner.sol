@@ -40,19 +40,37 @@ contract Burner is ERC20, Ownable, Presaleable {
      * Requirements:
      *
      * - The caller must be the contract's owner.
-     * - The contract must be in presale state.
      * - `to` cannot be the zero address.
      * - the owner must have a balance of at least `amount`.
      */
     function allocate(address to, uint256 amount)
         public
         onlyOwner
-        whenPresale
         returns (bool)
     {
         address owner = _msgSender();
         _transfer(owner, to, amount);
         _burn(owner, amount);
+        return true;
+    }
+
+    /**
+     * @dev See {IERC20-transfer}.
+     *
+     * Requirements:
+     *
+     * - `to` cannot be the zero address.
+     * - the caller must have a balance of at least `amount`.
+     * - The contract must not be in presale state.
+     */
+    function transfer(address to, uint256 amount)
+        public
+        override
+        whenNotPresale
+        returns (bool)
+    {
+        address owner = _msgSender();
+        _transfer(owner, to, amount);
         return true;
     }
 }
