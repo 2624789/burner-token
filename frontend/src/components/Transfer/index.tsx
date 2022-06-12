@@ -6,9 +6,14 @@ import { useToken } from "./../../context/token-context";
 
 import "./style.scss";
 
-const Transfer: React.FC = () => {
-  const { state, transfer } = useToken();
-  const { balance } = state;
+interface ITransferProps {
+  isAllocation?: boolean,
+}
+
+// TODO: Do not mix transfer and allocate. Reuse inputs only.
+const Transfer: React.FC<ITransferProps> = ({ isAllocation }) => {
+  const { state, transfer, allocate } = useToken();
+  const { balance, presale } = state;
 
   const [recipient, setRecipient] = useState<string>("");
   const [amount, setAmount] = useState<string>("");
@@ -18,6 +23,8 @@ const Transfer: React.FC = () => {
   const isRecipientValid = ethers.utils.isAddress(recipient);
   const isTransferEnabled =
     isBalanceEnough && isAmountValid && isRecipientValid;
+
+  const isTransferSupported = presale && isAllocation || !isAllocation;
 
   const handleChangeRecipient = (e: React.FormEvent<HTMLInputElement>) => {
     const newValue = e.currentTarget.value;
@@ -31,7 +38,8 @@ const Transfer: React.FC = () => {
 
   const onTransfer = async () => {
     try {
-      await transfer(recipient, amount);
+      if (isAllocation) await allocate(recipient, amount);
+      else await transfer(recipient, amount);
     }
     catch(e) {
       console.error(e);
@@ -53,6 +61,7 @@ const Transfer: React.FC = () => {
         size={42}
         value={recipient}
         onChange={handleChangeRecipient}
+        disabled={!isTransferSupported}
       />
       <label htmlFor="amount">Amount:</label>
       <input
@@ -62,9 +71,10 @@ const Transfer: React.FC = () => {
         placeholder="Enter amount to send"
         value={amount}
         onChange={handleChangeAmount}
+        disabled={!isTransferSupported}
       />
       <button type="button" onClick={onTransfer} disabled={!isTransferEnabled}>
-        Transfer
+        {isAllocation ? "Allocate" : "Transfer"}
       </button>
     </div>
   );

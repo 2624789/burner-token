@@ -1,5 +1,7 @@
 import React from "react";
 
+import Transfer from './../Transfer';
+
 import { useToken } from "./../../context/token-context";
 
 import './style.scss';
@@ -15,6 +17,7 @@ const OwnerControls: React.FC = () => {
         <button type="button" onClick={endPresale} disabled={!presale}>
           End Presale
         </button>
+        <Transfer isAllocation/>
       </fieldset>
     </div>
   );

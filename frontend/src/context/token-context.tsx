@@ -67,12 +67,14 @@ interface ITokenContext {
   state: ITokenState,
   endPresale: () => Promise<void>,
   transfer: (to: string, amount: string) => Promise<void>,
+  allocate: (to: string, amount: string) => Promise<void>,
 } 
 
 const defaultContext: ITokenContext = {
   state: initialState,
   endPresale: async () => {},
   transfer: async (to: string, amount: string) => {},
+  allocate: async (to: string, amount: string) => {},
 }
 
 const TokenContext = createContext<ITokenContext>(defaultContext);
@@ -115,8 +117,8 @@ const TokenContextProvider: FC<IProviderProps> = ({children}) => {
   };
 
   const handleTransferEvent = (from: string, to: string, value: number) => {
-    if (account === from || account === to)
-      getBalance();
+    if (to === ethers.constants.AddressZero) getSupply();
+    if (account === from || account === to) getBalance();
   };
 
   useEffect(() => {
@@ -195,9 +197,15 @@ const TokenContextProvider: FC<IProviderProps> = ({children}) => {
     await contract.transfer(toAddress, amountNumber);
   };
 
+  const allocate = async (to: string, amount: string) => {
+    const toAddress = ethers.utils.getAddress(to);
+    const amountNumber = ethers.utils.parseUnits(amount);
+    await contract.allocate(toAddress, amountNumber);
+  };
+
   return (
     <TokenContext.Provider
-      value={{ state, endPresale, transfer }}
+      value={{ state, endPresale, transfer, allocate }}
     >
       {children}
     </TokenContext.Provider>
