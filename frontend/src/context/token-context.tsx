@@ -65,10 +65,12 @@ const reducer = (state: ITokenState, action: TokenAction): ITokenState => {
 // Context
 interface ITokenContext {
   state: ITokenState,
+  endPresale: () => Promise<void>,
 } 
 
 const defaultContext: ITokenContext = {
   state: initialState,
+  endPresale: async () => {},
 }
 
 const TokenContext = createContext<ITokenContext>(defaultContext);
@@ -133,6 +135,12 @@ const TokenContextProvider: FC<IProviderProps> = ({children}) => {
 
   useEffect(() => {
     getPresale();
+
+    contract.on('PresaleEnd', getPresale);
+
+    return () => {
+      contract.removeAllListeners('PresaleEnd')
+    };
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -162,9 +170,13 @@ const TokenContextProvider: FC<IProviderProps> = ({children}) => {
     dispatch({type: 'SET_SUPPLY', payload: Number(supply)});
   };
 
+  const endPresale = async () => {
+    await contract.endPresale();
+  };
+
   return (
     <TokenContext.Provider
-      value={{ state }}
+      value={{ state, endPresale }}
     >
       {children}
     </TokenContext.Provider>

@@ -79,7 +79,7 @@ abstract contract Presaleable is Context {
      *
      * Requirements:
      *
-     * - The contract must be in presale paused.
+     * - The contract must be in presale state.
      */
     function _endPresale() internal virtual whenPresale {
         _presale = false;

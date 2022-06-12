@@ -64,4 +64,10 @@ button {
   background-color: transparent;
   color: $yellow;
   border-color: $yellow;
+
+  &[disabled] {
+    color: $pewter;
+    border-color: $pewter;
+    cursor: no-drop;
+  }
 }

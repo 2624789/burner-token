@@ -11,4 +11,16 @@ contract Burner is ERC20, Ownable, Presaleable {
     constructor(uint256 initialSupply) ERC20("Burner", "BRNR") {
         _mint(msg.sender, initialSupply * (10**decimals()));
     }
+
+    /**
+     * @dev End Presale.
+     *
+     * Requirements:
+     *
+     * - The caller must be the contract's owner.
+     * - The contract must be in presale state.
+     */
+    function endPresale() public virtual onlyOwner {
+        _endPresale();
+    }
 }
