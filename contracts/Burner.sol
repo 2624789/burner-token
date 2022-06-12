@@ -8,8 +8,18 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "./Presaleable.sol";
 
 contract Burner is ERC20, Ownable, Presaleable {
-    constructor(uint256 initialSupply) ERC20("Burner", "BRNR") {
-        _mint(msg.sender, initialSupply * (10**decimals()));
+    uint256 private _initialSupply;
+
+    constructor(uint256 initialSupply_) ERC20("Burner", "BRNR") {
+        _initialSupply = initialSupply_ * 10**decimals();
+        _mint(msg.sender, _initialSupply);
+    }
+
+    /**
+     * @dev Returns the initial supply of the token.
+     */
+    function initialSupply() public view returns (uint256) {
+        return _initialSupply;
     }
 
     /**

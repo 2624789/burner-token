@@ -15,6 +15,7 @@ import { useEthereumState } from "./ethereum-context";
 // State
 interface ITokenState {
   address: string,
+  initialSupply: number,
   name: string,
   owner: string,
   presale?: boolean,
@@ -25,6 +26,7 @@ interface ITokenState {
 
 const initialState: ITokenState = {
   address: '',
+  initialSupply: 0,
   name: '',
   owner: '',
   presale: undefined,
@@ -37,6 +39,7 @@ const initialState: ITokenState = {
 type TokenAction =
   | { type: 'SET_ADDRESS'; payload: string }
   | { type: 'SET_BALANCE'; payload: number }
+  | { type: 'SET_INITIAL_SUPPLY'; payload: number }
   | { type: 'SET_NAME'; payload: string }
   | { type: 'SET_OWNER'; payload: string }
   | { type: 'SET_PRESALE'; payload: boolean }
@@ -49,6 +52,8 @@ const reducer = (state: ITokenState, action: TokenAction): ITokenState => {
       return { ...state, address: action.payload }
     case 'SET_BALANCE':
       return { ...state, balance: action.payload }
+    case 'SET_INITIAL_SUPPLY':
+      return { ...state, initialSupply: action.payload }
     case 'SET_NAME':
       return { ...state, name: action.payload }
     case 'SET_OWNER':
@@ -131,6 +136,17 @@ const TokenContextProvider: FC<IProviderProps> = ({children}) => {
   };
 
   useEffect(() => {
+    getInitialSupply();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const getInitialSupply = async () => {
+    const initialSupplyInWei = await contract.initialSupply();
+    const initialSupply = ethers.utils.formatEther(initialSupplyInWei);
+    dispatch({type: 'SET_INITIAL_SUPPLY', payload: Number(initialSupply)});
+  };
+
+  useEffect(() => {
     getName();
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -183,7 +199,7 @@ const TokenContextProvider: FC<IProviderProps> = ({children}) => {
 
   const getSupply = async () => {
     const supplyInWei = await contract.totalSupply();
-    const supply = ethers.utils.formatEther(supplyInWei)
+    const supply = ethers.utils.formatEther(supplyInWei);
     dispatch({type: 'SET_SUPPLY', payload: Number(supply)});
   };
 
