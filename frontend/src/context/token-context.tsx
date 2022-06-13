@@ -15,6 +15,7 @@ import { useEthereumState } from "./ethereum-context";
 // State
 interface ITokenState {
   address: string,
+  burningRate: number,
   initialSupply: number,
   name: string,
   owner: string,
@@ -26,6 +27,7 @@ interface ITokenState {
 
 const initialState: ITokenState = {
   address: '',
+  burningRate: 0,
   initialSupply: 0,
   name: '',
   owner: '',
@@ -39,6 +41,7 @@ const initialState: ITokenState = {
 type TokenAction =
   | { type: 'SET_ADDRESS'; payload: string }
   | { type: 'SET_BALANCE'; payload: number }
+  | { type: 'SET_BURNING_RATE'; payload: number }
   | { type: 'SET_INITIAL_SUPPLY'; payload: number }
   | { type: 'SET_NAME'; payload: string }
   | { type: 'SET_OWNER'; payload: string }
@@ -52,6 +55,8 @@ const reducer = (state: ITokenState, action: TokenAction): ITokenState => {
       return { ...state, address: action.payload }
     case 'SET_BALANCE':
       return { ...state, balance: action.payload }
+    case 'SET_BURNING_RATE':
+      return { ...state, burningRate: action.payload }
     case 'SET_INITIAL_SUPPLY':
       return { ...state, initialSupply: action.payload }
     case 'SET_NAME':
@@ -136,6 +141,17 @@ const TokenContextProvider: FC<IProviderProps> = ({children}) => {
   };
 
   useEffect(() => {
+    getBurningRate();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const getBurningRate = async () => {
+    const burningRateX100000 = await contract.burningRate();
+    const burningRate = burningRateX100000 / 100000;
+    dispatch({type: 'SET_BURNING_RATE', payload: Number(burningRate)});
+  };
+
+  useEffect(() => {
     getInitialSupply();
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -169,7 +185,7 @@ const TokenContextProvider: FC<IProviderProps> = ({children}) => {
   useEffect(() => {
     getPresale();
 
-    contract.on('PresaleEnd', getPresale);
+    contract.on('PresaleEnd', handlePresaleEndEvent);
 
     return () => {
       contract.removeAllListeners('PresaleEnd')
@@ -180,6 +196,11 @@ const TokenContextProvider: FC<IProviderProps> = ({children}) => {
   const getPresale = async () => {
     const presale = await contract.presale();
     dispatch({type: 'SET_PRESALE', payload: presale});
+  };
+
+  const handlePresaleEndEvent = async () => {
+    getPresale();
+    getBurningRate();
   };
 
   useEffect(() => {
