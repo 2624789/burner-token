@@ -14,27 +14,21 @@ contract Burner is ERC20, Ownable, Presaleable {
         uint256 amountLeft;
     }
 
-    // TODO: Add change to stage two
-    enum Stages { Presale, One, Two }
-
-    Stages private _currentStage;
     uint256 private _initialSupply;
     BurningRate _presaleBR = BurningRate(
         1,
         1,
         15000000000 * 10**decimals()
     );
-    BurningRate _oneBR = BurningRate(
+    BurningRate _notPresaleBR = BurningRate(
         9998,
         10000,
         1000000 * 10**decimals()
     );
-    BurningRate _twoBR = BurningRate(0, 1, 0);
 
     constructor(uint256 initialSupply_) ERC20("Burner", "BRNR") {
         _initialSupply = initialSupply_ * 10**decimals();
         _mint(msg.sender, _initialSupply);
-        _currentStage = Stages.Presale;
     }
 
     /**
@@ -48,12 +42,10 @@ contract Burner is ERC20, Ownable, Presaleable {
      * @dev Returns the current burning rate of the token.
      */
     function burningRate() public view returns (uint256) {
-        if (_currentStage == Stages.Presale) {
+        if (presale() == true) {
             return 100000 * _presaleBR.numerator / _presaleBR.denominator;
-        } else if (_currentStage == Stages.One) {
-            return 100000 * _oneBR.numerator / _oneBR.denominator;
         } else {
-            return 100000 * _twoBR.numerator / _twoBR.denominator;
+            return 100000 * _notPresaleBR.numerator / _notPresaleBR.denominator;
         }
     }
 
@@ -67,7 +59,6 @@ contract Burner is ERC20, Ownable, Presaleable {
      */
     function endPresale() public onlyOwner {
         _endPresale();
-        _currentStage = Stages.One;
     }
 
     /**
@@ -85,29 +76,18 @@ contract Burner is ERC20, Ownable, Presaleable {
         returns (bool)
     {
         address owner = _msgSender();
-        uint256 amountToBurn;
-        uint256 amountLeft;
-        amountToBurn = _getAmountToBurn(amount);
-        amountLeft = balanceOf(owner) - amountToBurn;
+        uint256 amountToBurn = _getAmountToBurn(amount);
+        uint256 amountLeft = balanceOf(owner) - amountToBurn;
 
-        if(_currentStage == Stages.Presale) {
+        if(presale() == true) {
             require(
                 amountLeft >= _presaleBR.amountLeft,
                 "Allocate: exceeds presale amount limit"
             );
-        }
-
-        if(_currentStage == Stages.One) {
+        } else {
             require(
-                amountLeft >= _oneBR.amountLeft,
-                "Allocate: exceeds stage amount limit"
-            );
-        }
-
-        if(_currentStage == Stages.Two) {
-            require(
-                amountLeft >= _twoBR.amountLeft,
-                "Allocate: exceeds stage amount limit"
+                amountLeft >= _notPresaleBR.amountLeft,
+                "Allocate: exceeds sale amount limit"
             );
         }
 
@@ -126,12 +106,10 @@ contract Burner is ERC20, Ownable, Presaleable {
         view
         returns(uint256)
     {
-        if (_currentStage == Stages.Presale) {
+        if (presale() == true) {
             return amount * _presaleBR.numerator / _presaleBR.denominator;
-        } else if (_currentStage == Stages.One) {
-            return amount * _oneBR.numerator / _oneBR.denominator;
         } else {
-            return amount * _twoBR.numerator / _twoBR.denominator;
+            return amount * _notPresaleBR.numerator / _notPresaleBR.denominator;
         }
     }
 
